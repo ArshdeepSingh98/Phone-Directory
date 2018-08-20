@@ -93,6 +93,21 @@ public:
         }
     }
 
+    void findwordUtilName(TN curr, string temp, set<string> &l){
+        if(curr->endOfWord){
+            l.insert(temp);
+        }
+
+        for(int i=0;i<26;i++){
+            char c = i+'a';
+            if(curr->children[c] != nullptr){
+                //cout << "test : " << temp + c << endl;
+                findwordUtilName(curr->children[c], temp + c, l);
+            }
+        }
+    }
+
+
     void findwords(TN curr, string str, set<string> &l){
         string temp = "";
         for(int i=0;i<str.length();i++){
@@ -111,22 +126,50 @@ public:
         }
     }
 
+    void findwordsName(TN curr, string str, set<string> &l){
+        string temp = "";
+        for(int i=0;i<str.length();i++){
+            char c = str[i];
+            temp += c;
+            if(curr->children[c] == nullptr){
+                return;
+            }
+            curr = curr->children[c];
+        }
+        //cout << temp << endl;
+        findwordUtilName(curr, temp, l);
+
+        for(auto w : l){
+            w = temp + w;
+        }
+    }
+
+
+
     set<string> autocomplete(string word){
         set<string> l;
         findwords(root,word, l);
         return l;
     }
+
+    set<string> autocompleteName(string word){
+        set<string> l;
+        findwordsName(root,word,l);
+        return l;
+    }
 };
 
 class PhoneDirectory{
-    Trie t;
+    Trie t,t_name;
     unordered_map <string, string> m;
-
+    unordered_map <string, string> m_inverse;
 public:
     bool Insert(string name, string phone){
         if(!t.Search(phone)){
             m.insert(make_pair(phone, name));
+            m_inverse.insert(make_pair(name, phone));
             t.Insert(phone);
+            t_name.Insert(name);
             return true;
         }
         return false;
@@ -142,6 +185,15 @@ public:
 
         for(auto ph : l){
             cout << ph << endl;
+        }
+    }
+
+    void aCompletePrintName(string name){
+        set<string> n;
+        n = t.autocompleteName(name);
+
+        for(auto nam : n){
+            cout << nam << endl;
         }
     }
 
@@ -171,7 +223,19 @@ public:
         return found;
     }
 
+    bool findPrintName(string name){
+        set<string> l = t_name.autocompleteName(name);
+        bool found = false;
 
+        for(auto nam : l){
+            //cout << nam << endl;
+            if(m_inverse.find(nam) != m_inverse.end()){
+                cout << nam << " : " << m_inverse[nam] << endl;
+                found = true;
+            }
+        }
+        return found;
+    }
 
 };
 
@@ -202,7 +266,8 @@ int main()
 
     cout << "Enter i to insert \n";
     cout << "Enter d to delete \n";
-    cout << "Enter f to find\n";
+    cout << "Enter f to find by Phone\n";
+    cout << "Enter F to find by Name\n";
     cout << "\n";
     SetColor(7);
 
@@ -249,7 +314,7 @@ int main()
                     SetColor(7);
                 }
             }
-        }else if(c == 'f' || c == 'F'){
+        }else if(c == 'f'){
             string f;
             cout << "Enter the number to find : ";
             SetColor(15);
@@ -267,6 +332,17 @@ int main()
             cin >> d;
             SetColor(7);
             pd.del(d);
+        }else if(c == 'F'){
+            string f;
+            cout << "Enter the name to find : ";
+            SetColor(15);
+            cin >> f;
+            if(!pd.findPrintName(f)){
+                SetColor(2);
+                cout << "No Matching name\n";
+                SetColor(7);
+            }
+            SetColor(7);
         }
     }
     return 0;
