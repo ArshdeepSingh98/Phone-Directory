@@ -1,11 +1,57 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>  
+#include <set>
+#include <unordered_map>
+#ifdef _WIN32
 #include <windows.h>
+#endif
 using namespace std;
 #define PHONE_SIZE 5
+#define ANSI_RESET "\033[0m"
+#define ANSI_COLOR_RED "\033[31m"
+#define ANSI_COLOR_GREEN "\033[32m"
+#define ANSI_COLOR_YELLOW "\033[33m"
+#define ANSI_COLOR_BLUE "\033[34m"
+#define ANSI_COLOR_MAGENTA "\033[35m"
+#define ANSI_COLOR_CYAN "\033[36m"
+#define ANSI_COLOR_WHITE "\033[37m"
 
 
 void SetColor(int value){
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),  value);
+    // 2, 6, 7, 8, 10, 12, 15
+    #ifdef _WIN32
+        // Code that works on Windows operating system
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),  value);
+    #else
+        // Code that works on Mac/Unix operating system
+        switch (value) {
+            case 2:
+                std::cout << ANSI_COLOR_RED;
+                break;
+            case 6:
+                std::cout << ANSI_COLOR_GREEN;
+                break;
+            case 7:
+                std::cout << ANSI_COLOR_MAGENTA;
+                break;
+            case 8:
+                std::cout << ANSI_COLOR_CYAN;
+                break;
+            case 10:
+                std::cout << ANSI_COLOR_YELLOW;
+                break;
+            case 12:
+                std::cout << ANSI_COLOR_BLUE;
+                break;
+            case 15:
+                std::cout << ANSI_COLOR_WHITE;
+                break;
+            default:
+                // Reset to default color if an invalid code is provided
+                std::cout << ANSI_RESET;
+                break;
+        }   
+    #endif
 }
 
 
