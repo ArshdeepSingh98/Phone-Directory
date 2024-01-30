@@ -37,7 +37,7 @@ Steps:
 ```./mainRunnable```
 
 ## Screenshots
-Example of inserting, deleting, finding:
+Example of inserting, deleting, finding: <br>
 <img src="showcase.png" width="350">
 
 <br>
